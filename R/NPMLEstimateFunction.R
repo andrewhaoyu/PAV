@@ -64,7 +64,7 @@ NPMLEstimateFunction <- function(N,cen,d=c(1:length(N))) {
   }
 
 
-  return(list(UU,pp))
+  return(list(UU,pp,sum(UU*pp)))
 
 }
 
