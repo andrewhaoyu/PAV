@@ -1,15 +1,18 @@
 
+recursion <- function (pp, UU, NN, Y,obs) {
+  ww <- pp*(1-UU)^(NN-Y*obs) * UU^(Y*obs)
+  return(ww)
+}
+
 #' Title
 #'
 #' @param N: the geometric sampling result
-#' @param cen: the censored status of geometric sampling
-#' @param d: an index to select part of the data, default is 1:N. make it easy for the boot package.
-#'
+#' @param obs: the censored status of geometric sampling
 #' @return the discrete probability mass of the underlying distribution. UU is the probability mass, pp is the corresponding probability on that probability mass
 #' @export
 #'
 #' @examples
-NPMLEstimateFunction <- function(N,cen,d=c(1:length(N))) {
+NPMLEstimateFunction <- function(N,obs) {
   #beginning setting of NPML:
   # NN is the geometric sampling result
   # UU is the probability mass point of NPML
@@ -27,7 +30,7 @@ NPMLEstimateFunction <- function(N,cen,d=c(1:length(N))) {
   # we return a lis of UU and pp for the NPML
   NN <- N[d]
   KK <- length(NN)
-  cend = cen[d]
+
   Y <- rep(1,KK)
   UU <- 1:KK/(KK+1)
 
@@ -44,12 +47,14 @@ NPMLEstimateFunction <- function(N,cen,d=c(1:length(N))) {
     #Niter
 
     for(k in 1:KK) {
-      ww[k,] <- mapply(function(x,y) recursion(x,y,NN[k],Y[k],cend[k]),pp,UU)
+      ###ww is the numerator of the posterior probability
+      ###ww is a K by K matrix, each row represent a subject, each column is a unit
+      ww[k,] <- mapply(function(x,y) recursion(x,y,NN[k],Y[k],obs[k]),pp,UU)
       ww[k,] <- ww[k,]/sum(ww[k,])
     }  #k to K
     pp <- apply(ww,2,sum)/sum(ww)
     for(j in 1:KK) {
-      UU[j] <- sum(ww[,j]*Y*cend)/sum(ww[,j]*(NN-Y+cend))
+      UU[j] <- sum(ww[,j]*Y*obs)/sum(ww[,j]*(NN-Y+obs))
     }
     UU[which(UU>(1-epi))] <- 1-epi
     UU[which(UU<epi)] <- epi
