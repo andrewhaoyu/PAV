@@ -28,7 +28,7 @@ NPMLEstimateFunction <- function(N,obs) {
   # set a epi standard for UU, if UU>(1-epi),UU=1-epi; if UU<epi, UU=epi;
   #results of the NPML:
   # we return a lis of UU and pp for the NPML
-  NN <- N[d]
+  NN <- N
   KK <- length(NN)
 
   Y <- rep(1,KK)
