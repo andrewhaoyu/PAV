@@ -129,7 +129,7 @@ Mstep <- function(uu,beta,x,y,ww){
   for(l in 1:step){
 
     uu_beta_old <- c(uu_old,beta_old)
-    print(uu_beta_old)
+  #print(uu_beta_old)
     uu_new = uu_old+alpha*gr_u_fun(uu_old,y,ww,beta_old,x,n)
     beta_new <- beta_old+alpha*gr_b_fun(uu_new,y,ww,beta_old,x,n)
     uu_beta_new <- c(uu_new,beta_new)
@@ -164,6 +164,7 @@ NPMLLogFun <- function(y,x,uu0,beta0){
   w = rep(1/n,n)
   for(l in 1:step){
     uu_beta_old <- c(uu_old,beta_old)
+    print(uu_beta_old)
     ww = Estep(uu_old,beta_old,x,y,w)
     Mstep_result = Mstep(uu_old,beta_old,x,y,ww)
     uu_new = Mstep_result[[1]]
