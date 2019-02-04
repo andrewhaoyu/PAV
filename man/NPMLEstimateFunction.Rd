@@ -4,14 +4,12 @@
 \alias{NPMLEstimateFunction}
 \title{Title}
 \usage{
-NPMLEstimateFunction(N, cen, d = c(1:length(N)))
+NPMLEstimateFunction(N, obs)
 }
 \arguments{
 \item{N:}{the geometric sampling result}
 
-\item{cen:}{the censored status of geometric sampling}
-
-\item{d:}{an index to select part of the data, default is 1:N. make it easy for the boot package.}
+\item{obs:}{the censored status of geometric sampling}
 }
 \value{
 the discrete probability mass of the underlying distribution. UU is the probability mass, pp is the corresponding probability on that probability mass
