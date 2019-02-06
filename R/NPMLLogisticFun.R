@@ -24,24 +24,19 @@ Estep <- function(uu,beta,x,y,w){
 
   pp <- matrix(0,n,n)
   xb <- x%*%beta
-  for(i in 1:K){
-    for(j in 1:K){
-      pp[i,j] <- (1-logit_inver(uu[j]+xb[i]))^(y[i]-1)*logit_inver(uu[j]+xb[i])
-    }
-  }
+  for(i in 1:n){
+pp[i,] <- (1-logit_inver(uu+xb[i]))^(y[i]-1)*logit_inver(uu+xb[i])
+}
   ######### ww perform the bayesian rule
   ######### Pr(Z_j|N_i) = Pr(N_i|Z_j)*Pr(Z_j)/(sum_j Pr(N_i|Z_j)*Pr(Z_j))
 
   ww <- matrix(0,n,n)
-  for(i in 1:K){
-
-    for(j in 1:K){
-      #ww right now is the joint distribution of i,j
-      ww[i,j] = w[j]*pp[i,j]
-    }
+  for(i in 1:n){
+#ww right now is the joint distribution of i,j
+    ww[i,] = w*pp[i,]
   }
   ##posterior = joint distribution/marginal distribution
-  for(i in 1:K){
+  for(i in 1:n){
     ww[i,] = ww[i,]/sum(ww[i,])
   }
 
@@ -66,8 +61,7 @@ gr_u_fun <- function(u,N,ww,b,x,K){
   temp_mat <- matrix(0,K,K)
   for(i in 1:K){
     temp_mat[i,] = 1-N[i]*logit_inver(u+xb[i])
-
-  }
+}
   #use the element wise times in R
   gr_u = colSums(temp_mat*ww)
   # for(j in 1:K){
@@ -103,7 +97,7 @@ gr_b_fun <- function(uu,N,ww,b,x,K){
   for(k in 1:p){
     x_temp <- x[,k]
     #use the element times in R
-    p[k] <- sum(x_temp*temp_mat*ww)
+    p[k] <- sum(x_temp%*%(temp_mat*ww))
   }
 
   return(p)
@@ -117,9 +111,10 @@ gr_b_fun <- function(uu,N,ww,b,x,K){
 #' @param x
 #' @param y
 #' @param ww
+#' @param alpha_x
 #'
 #' @return
-Mstep <- function(uu,beta,x,y,ww){
+Mstep <- function(uu,beta,x,y,ww,alpha_x){
   uu_old <- uu
   beta_old <- beta
   step <- 100
@@ -131,7 +126,7 @@ Mstep <- function(uu,beta,x,y,ww){
     uu_beta_old <- c(uu_old,beta_old)
   #print(uu_beta_old)
     uu_new = uu_old+alpha*gr_u_fun(uu_old,y,ww,beta_old,x,n)
-    beta_new <- beta_old+alpha*gr_b_fun(uu_new,y,ww,beta_old,x,n)
+    beta_new <- beta_old+alpha_x*gr_b_fun(uu_new,y,ww,beta_old,x,n)
     uu_beta_new <- c(uu_new,beta_new)
     error <- max(abs(uu_beta_new-uu_beta_old))
     if(error<tol){
@@ -155,6 +150,13 @@ Mstep <- function(uu,beta,x,y,ww){
 #' @export
 #'
 NPMLLogFun <- function(y,x,uu0,beta0){
+  if(is.null(uu0)){
+    #use the stratified propobablity with some smoother
+    y_sm = y+1
+    uu0=seq(min(log((1/y_sm)/(1-1/y_sm))),
+            max(log((1/y_sm)/(1-1/y_sm))),
+            max(log((1/y_sm)/(1-1/y_sm)))-min(log((1/y_sm)/(1-1/y_sm)))/(n-1))
+  }
   x <- as.matrix(x)
   step = 100
   uu_old = uu0
@@ -162,11 +164,20 @@ NPMLLogFun <- function(y,x,uu0,beta0){
   tol = 0.001
   n = length(y)
   w = rep(1/n,n)
+  #set the step length of gradient decent to aviod unconvergence
+  var.x = apply(x,2,var)
+  alpha_x = rep(1/n,length(beta_old))
+  for(i in 1:length(beta_old)){
+  if(var.x[i]>=1){
+    alpha_x[i] = alpha_x[i]/var.x[i]
+  }
+  }
+
   for(l in 1:step){
     uu_beta_old <- c(uu_old,beta_old)
     print(uu_beta_old)
     ww = Estep(uu_old,beta_old,x,y,w)
-    Mstep_result = Mstep(uu_old,beta_old,x,y,ww)
+    Mstep_result = Mstep(uu_old,beta_old,x,y,ww,alpha_x)
     uu_new = Mstep_result[[1]]
     beta_new = Mstep_result[[2]]
     uu_beta_new <- c(uu_new,beta_new)
