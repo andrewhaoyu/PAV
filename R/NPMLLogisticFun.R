@@ -14,9 +14,10 @@ logit_inver <- function(x){
 #' @param x
 #' @param y
 #' @param w
+#' @param obs
 #'
 #' @return
-Estep <- function(uu,beta,x,y,w){
+Estep <- function(uu,beta,x,y,w,obs){
   n <- length(y)
   ###let i represent person
   ###let j represent the population unit
@@ -25,7 +26,7 @@ Estep <- function(uu,beta,x,y,w){
   pp <- matrix(0,n,n)
   xb <- x%*%beta
   for(i in 1:n){
-pp[i,] <- (1-logit_inver(uu+xb[i]))^(y[i]-1)*logit_inver(uu+xb[i])
+pp[i,] <- (1-logit_inver(uu+xb[i]))^(y[i]-obs[i])*logit_inver(uu+xb[i])^obs[i]
 }
   ######### ww perform the bayesian rule
   ######### Pr(Z_j|N_i) = Pr(N_i|Z_j)*Pr(Z_j)/(sum_j Pr(N_i|Z_j)*Pr(Z_j))
@@ -51,16 +52,17 @@ pp[i,] <- (1-logit_inver(uu+xb[i]))^(y[i]-1)*logit_inver(uu+xb[i])
 #' @param b
 #' @param x
 #' @param K
+#' @param obs
 #'
 #' @return
-gr_u_fun <- function(u,N,ww,b,x,K){
+gr_u_fun <- function(u,N,ww,b,x,K,obs){
   sum <- 0
   xb <- x%*%b
   gr_u <- rep(0,K)
   #record a temp matrix (1-n_k*p)
   temp_mat <- matrix(0,K,K)
   for(i in 1:K){
-    temp_mat[i,] = 1-N[i]*logit_inver(u+xb[i])
+    temp_mat[i,] = obs[i]-N[i]*logit_inver(u+xb[i])
 }
   #use the element wise times in R
   gr_u = colSums(temp_mat*ww)
@@ -78,19 +80,20 @@ gr_u_fun <- function(u,N,ww,b,x,K){
 #' @param b
 #' @param x
 #' @param K
+#' @param obs
 #'
 #' @return
 #' @export
 #'
 #' @examples
-gr_b_fun <- function(uu,N,ww,b,x,K){
+gr_b_fun <- function(uu,N,ww,b,x,K,obs){
   u <- uu
   p <- length(b)
   t <- 0
   xb <- x%*%b
   temp_mat <- matrix(0,K,K)
   for(i in 1:K){
-    temp_mat[i,] = 1-N[i]*logit_inver(u+xb[i])
+    temp_mat[i,] = obs[i]-N[i]*logit_inver(u+xb[i])
 
   }
 
@@ -112,9 +115,10 @@ gr_b_fun <- function(uu,N,ww,b,x,K){
 #' @param y
 #' @param ww
 #' @param alpha_x
+#' @param obs
 #'
 #' @return
-Mstep <- function(uu,beta,x,y,ww,alpha_x){
+Mstep <- function(uu,beta,x,y,ww,alpha_x,obs){
   uu_old <- uu
   beta_old <- beta
   step <- 100
@@ -125,8 +129,8 @@ Mstep <- function(uu,beta,x,y,ww,alpha_x){
 
     uu_beta_old <- c(uu_old,beta_old)
   #print(uu_beta_old)
-    uu_new = uu_old+alpha*gr_u_fun(uu_old,y,ww,beta_old,x,n)
-    beta_new <- beta_old+alpha_x*gr_b_fun(uu_new,y,ww,beta_old,x,n)
+    uu_new = uu_old+alpha*gr_u_fun(uu_old,y,ww,beta_old,x,n,obs)
+    beta_new <- beta_old+alpha_x*gr_b_fun(uu_new,y,ww,beta_old,x,n,obs)
     uu_beta_new <- c(uu_new,beta_new)
     error <- max(abs(uu_beta_new-uu_beta_old))
     if(error<tol){
@@ -143,13 +147,14 @@ Mstep <- function(uu,beta,x,y,ww,alpha_x){
 #'
 #' @param y
 #' @param x
+#' @param obs
 #' @param uu0
 #' @param beta0
 #'
 #' @return
 #' @export
 #'
-NPMLLogFun <- function(y,x,uu0,beta0){
+NPMLLogFun <- function(y,x,obs,uu0,beta0){
   if(is.null(uu0)){
     #use the stratified propobablity with some smoother
     y_sm = y+1

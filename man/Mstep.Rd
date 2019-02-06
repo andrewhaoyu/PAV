@@ -4,10 +4,10 @@
 \alias{Mstep}
 \title{M Step for NPMLLogfun}
 \usage{
-Mstep(uu, beta, x, y, ww, alpha_x)
+Mstep(uu, beta, x, y, ww, alpha_x, obs)
 }
 \arguments{
-\item{alpha_x}{}
+\item{obs}{}
 }
 \description{
 M Step for NPMLLogfun

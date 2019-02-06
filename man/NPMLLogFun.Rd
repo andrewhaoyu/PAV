@@ -4,7 +4,7 @@
 \alias{NPMLLogFun}
 \title{NPMLLogFun}
 \usage{
-NPMLLogFun(y, x, uu0, beta0)
+NPMLLogFun(y, x, obs, uu0, beta0)
 }
 \arguments{
 \item{beta0}{}

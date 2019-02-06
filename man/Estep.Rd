@@ -4,10 +4,10 @@
 \alias{Estep}
 \title{E step for NPML logisitic}
 \usage{
-Estep(uu, beta, x, y, w)
+Estep(uu, beta, x, y, w, obs)
 }
 \arguments{
-\item{w}{}
+\item{obs}{}
 }
 \description{
 E step for NPML logisitic

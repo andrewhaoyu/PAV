@@ -4,10 +4,10 @@
 \alias{gr_b_fun}
 \title{gradient decent for M step slope}
 \usage{
-gr_b_fun(uu, N, ww, b, x, K)
+gr_b_fun(uu, N, ww, b, x, K, obs)
 }
 \arguments{
-\item{K}{}
+\item{obs}{}
 }
 \description{
 gradient decent for M step slope

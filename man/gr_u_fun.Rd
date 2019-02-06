@@ -4,10 +4,10 @@
 \alias{gr_u_fun}
 \title{gradient decent for M step intercept}
 \usage{
-gr_u_fun(u, N, ww, b, x, K)
+gr_u_fun(u, N, ww, b, x, K, obs)
 }
 \arguments{
-\item{K}{}
+\item{obs}{}
 }
 \description{
 gradient decent for M step intercept
