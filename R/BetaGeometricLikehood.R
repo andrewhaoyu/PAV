@@ -14,7 +14,7 @@ BetaGeometricLikehood <- function(x,N,cen){
   M.Par <- x[2]
   alpha <- ThetaBar.Par*M.Par
   beta <- M.Par*(1-ThetaBar.Par)
-  result <- lgamma(alpha+beta)+lgamma(alpha+cen)+lgamma(beta+N-1)-lgamma(alpha)-lgamma(beta)-lgamma(alpha+beta+N+cen-1)
+  result <- lgamma(alpha+beta)+lgamma(alpha+cen)+lgamma(beta+N-cen)-lgamma(alpha)-lgamma(beta)-lgamma(alpha+beta+N)
   return(sum(result))
 }
 
@@ -53,6 +53,7 @@ LogL.Dmu <- function(ThetaBar.Par,M.Par,N,cen){
 }
 
 
+
 #' Title
 #'
 #' @param ThetaBar.Par
@@ -87,7 +88,7 @@ LogL.Dalpha <- function(ThetaBar.Par,M.Par,N,cen){
   alpha <- ThetaBar.Par*M.Par
   beta <- M.Par*(1-ThetaBar.Par)
   result <- digamma(alpha+beta)/(exp(lgamma(alpha+beta)))+digamma(alpha+cen)/exp(lgamma(alpha+cen))-digamma(alpha)/exp(lgamma(alpha))
-  -digamma(alpha+beta+N+cen-1)/exp(lgamma(alpha+beta+N+cen-1))
+  -digamma(alpha+beta+N)/exp(lgamma(alpha+beta+N))
   return(sum(result))
 }
 
@@ -106,7 +107,7 @@ LogL.Dalpha <- function(ThetaBar.Par,M.Par,N,cen){
 LogL.Dbeta <- function(ThetaBar.Par,M.Par,N,cen){
   alpha <- ThetaBar.Par*M.Par
   beta <- M.Par*(1-ThetaBar.Par)
-  result <- digamma(alpha+beta)/exp(lgamma(alpha+beta))+digamma(beta+N-1)/exp(lgamma(beta+N-1))-
-    digamma(beta)/exp(lgamma(beta))-digamma(alpha+beta+N+cen-1)/exp(lgamma(alpha+beta+N+cen-1))
+  result <- digamma(alpha+beta)/exp(lgamma(alpha+beta))+digamma(beta+N-cen)/exp(lgamma(beta+N-cen))-
+    digamma(beta)/exp(lgamma(beta))-digamma(alpha+beta+N)/exp(lgamma(alpha+beta+N))
   sum(result)
 }
