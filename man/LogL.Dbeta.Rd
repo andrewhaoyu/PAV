@@ -4,12 +4,10 @@
 \alias{LogL.Dbeta}
 \title{Title}
 \usage{
-LogL.Dbeta(ThetaBar.Par, M.Par)
+LogL.Dbeta(ThetaBar.Par, M.Par, N, cen)
 }
 \arguments{
-\item{ThetaBar.Par}{Beta distribution mean paramter}
-
-\item{M.Par}{Beta distribution precision paramter}
+\item{cen}{}
 }
 \description{
 Title

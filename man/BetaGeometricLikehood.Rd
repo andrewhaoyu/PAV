@@ -4,10 +4,10 @@
 \alias{BetaGeometricLikehood}
 \title{Title}
 \usage{
-BetaGeometricLikehood(x)
+BetaGeometricLikehood(x, N, cen)
 }
 \arguments{
-\item{x}{the geometric sampling result}
+\item{cen}{}
 }
 \description{
 Title

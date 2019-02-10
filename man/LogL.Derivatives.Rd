@@ -4,10 +4,10 @@
 \alias{LogL.Derivatives}
 \title{Title}
 \usage{
-LogL.Derivatives(x)
+LogL.Derivatives(x, N, cen)
 }
 \arguments{
-\item{x}{the geometric sampling result}
+\item{cen}{}
 }
 \description{
 Title

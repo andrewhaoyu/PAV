@@ -1,12 +1,14 @@
 #' Title
 #'
-#' @param x the geometric sampling result
+#' @param x
+#' @param N
+#' @param cen
 #'
 #' @return
 #' @export
 #'
 #' @examples
-BetaGeometricLikehood <- function(x){
+BetaGeometricLikehood <- function(x,N,cen){
 
   ThetaBar.Par<- x[1]
   M.Par <- x[2]
@@ -20,57 +22,68 @@ BetaGeometricLikehood <- function(x){
 
 #' Title
 #'
-#' @param x the geometric sampling result
+#' @param x
+#' @param N
+#' @param cen
 #'
 #' @return
 #' @export
 #'
 #' @examples
-LogL.Derivatives <- function(x){
-  return(c(LogL.Dmu(x[1],x[2]),LogL.DM(x[1],x[2])))
+LogL.Derivatives <- function(x,N,cen){
+  return(c(LogL.Dmu(x[1],x[2],N,cen),LogL.DM(x[1],x[2],N,cen)))
 }
 
 #' Title
 #'
-#' @param ThetaBar.Par Beta distribution mean paramter
-#' @param M.Par Beta distribution precision paramter
+#' @param ThetaBar.Par
+#' @param M.Par
+#' @param N
+#' @param cen
 #'
 #' @return
 #' @export
 #'
 #' @examples
-LogL.Dmu <- function(ThetaBar.Par,M.Par){
+LogL.Dmu <- function(ThetaBar.Par,M.Par,N,cen){
   alpha <- ThetaBar.Par*M.Par
   beta <- M.Par*(1-ThetaBar.Par)
-  result <- LogL.Dalpha(ThetaBar.Par,M.Par)*M.Par-M*LogL.Dbeta(ThetaBar.Par,M.Par)
+  result <- LogL.Dalpha(ThetaBar.Par,M.Par,N,cen)*M.Par-M*LogL.Dbeta(ThetaBar.Par,M.Par,N,cen)
   return(result)
 }
 
-#' Title
-#'
-#' @param ThetaBar.Par Beta distribution mean paramter
-#' @param M.Par Beta distribution precision paramter
-#'
-#' @return
-#' @export
-#'
-#' @examples
-LogL.DM <- function(ThetaBar.Par,M.Par){
-  alpha <- ThetaBar.Par*M.Par
-  beta <- M.Par*(1-ThetaBar.Par)
-  result <- LogL.Dalpha(ThetaBar.Par,M.Par)*ThetaBar.Par-(1-ThetaBar.Par)*LogL.Dbeta(ThetaBar.Par,M.Par)
-}
 
 #' Title
 #'
-#' @param ThetaBar.Par Beta distribution mean paramter
-#' @param M.Par Beta distribution precision paramter
+#' @param ThetaBar.Par
+#' @param M.Par
+#' @param N
+#' @param cen
 #'
 #' @return
 #' @export
 #'
 #' @examples
-LogL.Dalpha <- function(ThetaBar.Par,M.Par){
+LogL.DM <- function(ThetaBar.Par,M.Par,N,cen){
+  alpha <- ThetaBar.Par*M.Par
+  beta <- M.Par*(1-ThetaBar.Par)
+  result <- LogL.Dalpha(ThetaBar.Par,M.Par,N,cen)*ThetaBar.Par-(1-ThetaBar.Par)*LogL.Dbeta(ThetaBar.Par,M.Par,N,cen)
+}
+
+
+
+#' Title
+#'
+#' @param ThetaBar.Par
+#' @param M.Par
+#' @param N
+#' @param cen
+#'
+#' @return
+#' @export
+#'
+#' @examples
+LogL.Dalpha <- function(ThetaBar.Par,M.Par,N,cen){
   alpha <- ThetaBar.Par*M.Par
   beta <- M.Par*(1-ThetaBar.Par)
   result <- digamma(alpha+beta)/(exp(lgamma(alpha+beta)))+digamma(alpha+cen)/exp(lgamma(alpha+cen))-digamma(alpha)/exp(lgamma(alpha))
@@ -78,16 +91,19 @@ LogL.Dalpha <- function(ThetaBar.Par,M.Par){
   return(sum(result))
 }
 
+
 #' Title
 #'
-#' @param ThetaBar.Par Beta distribution mean paramter
-#' @param M.Par Beta distribution precision paramter
+#' @param ThetaBar.Par
+#' @param M.Par
+#' @param N
+#' @param cen
 #'
 #' @return
 #' @export
 #'
 #' @examples
-LogL.Dbeta <- function(ThetaBar.Par,M.Par){
+LogL.Dbeta <- function(ThetaBar.Par,M.Par,N,cen){
   alpha <- ThetaBar.Par*M.Par
   beta <- M.Par*(1-ThetaBar.Par)
   result <- digamma(alpha+beta)/exp(lgamma(alpha+beta))+digamma(beta+N-1)/exp(lgamma(beta+N-1))-
