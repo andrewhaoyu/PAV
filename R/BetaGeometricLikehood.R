@@ -48,7 +48,7 @@ LogL.Derivatives <- function(x,N,cen){
 LogL.Dmu <- function(ThetaBar.Par,M.Par,N,cen){
   alpha <- ThetaBar.Par*M.Par
   beta <- M.Par*(1-ThetaBar.Par)
-  result <- LogL.Dalpha(ThetaBar.Par,M.Par,N,cen)*M.Par-M*LogL.Dbeta(ThetaBar.Par,M.Par,N,cen)
+  result <- LogL.Dalpha(ThetaBar.Par,M.Par,N,cen)*M.Par-M.Par*LogL.Dbeta(ThetaBar.Par,M.Par,N,cen)
   return(result)
 }
 

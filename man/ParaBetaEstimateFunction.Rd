@@ -4,10 +4,10 @@
 \alias{ParaBetaEstimateFunction}
 \title{Title}
 \usage{
-ParaBetaEstimateFunction(N)
+ParaBetaEstimateFunction(N, cen, begin)
 }
 \arguments{
-\item{N}{the geometric sampling result}
+\item{begin}{}
 }
 \description{
 Title
