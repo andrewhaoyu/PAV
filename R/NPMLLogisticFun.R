@@ -266,5 +266,5 @@ NPMLLogFun <- function(y,x,obs,uu0,beta0){
   max_likelihood <-   LikeliResult[l]
   max_step = l
 
-  return(list(uu_new,beta_new,max_likelihood,max_step))
+  return(list(uu_new,w,beta_new,max_likelihood,max_step))
 }
