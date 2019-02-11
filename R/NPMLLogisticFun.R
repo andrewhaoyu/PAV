@@ -228,7 +228,7 @@ NPMLLogFun <- function(y,x,obs,uu0,beta0){
   step = 100
   uu_old = uu0
   beta_old = beta0
-  tol = 0.001
+  tol = 0.0001
   n = length(y)
   w = rep(1/n,n)
   #set the step length of gradient decent to aviod unconvergence
