@@ -225,7 +225,7 @@ NPMLLogFun <- function(y,x,obs,uu0,beta0){
             max(log((1/y_sm)/(1-1/y_sm)))-min(log((1/y_sm)/(1-1/y_sm)))/(n-1))
   }
   x <- as.matrix(x)
-  step = 100
+  step = 5000
   uu_old = uu0
   beta_old = beta0
   tol = 0.0001
@@ -241,10 +241,10 @@ NPMLLogFun <- function(y,x,obs,uu0,beta0){
   }
   LikeliResult <- rep(0,step)
   StepResult <- rep(0,step)
-  #library(PAV)
+
   for(l in 1:step){
     uu_beta_old <- c(uu_old,beta_old)
-    #print(uu_beta_old)
+
     #print(uu_beta_old)
     ww = Estep(uu_old,beta_old,x,y,w,obs)
     LikeliResult[l] <- ObsLikfun(y,x,uu_old,beta_old,w,obs)
