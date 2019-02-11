@@ -244,7 +244,7 @@ NPMLLogFun <- function(y,x,obs,uu0,beta0){
   #library(PAV)
   for(l in 1:step){
     uu_beta_old <- c(uu_old,beta_old)
-    print(uu_beta_old)
+    #print(uu_beta_old)
     #print(uu_beta_old)
     ww = Estep(uu_old,beta_old,x,y,w,obs)
     LikeliResult[l] <- ObsLikfun(y,x,uu_old,beta_old,w,obs)
